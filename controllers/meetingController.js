@@ -1,4 +1,4 @@
-const MeetingRequest = require("../models/MeetingRequest");
+/*const MeetingRequest = require("../models/MeetingRequest");
 
 exports.requestMeeting = async (req, res) => {
     const { teacherId } = req.body;
@@ -18,4 +18,21 @@ exports.updateMeetingRequest = async (req, res) => {
     const { requestId, status } = req.body;
     await MeetingRequest.findByIdAndUpdate(requestId, { status });
     res.json({ message: "Meeting request updated" });
+};
+*/
+const MeetingRequest = require("../models/MeetingRequest");
+
+exports.sendRequest = async (req, res) => {
+  const { teacherId, message } = req.body;
+  const studentId = req.user.id;
+
+  const request = await MeetingRequest.create({ teacherId, studentId, message });
+  res.json(request);
+};
+
+exports.getRequestsForTeacher = async (req, res) => {
+  const teacherId = req.user.id;
+
+  const requests = await MeetingRequest.find({ teacherId }).populate("studentId", "name email");
+  res.json(requests);
 };

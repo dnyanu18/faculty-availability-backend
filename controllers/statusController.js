@@ -1,4 +1,4 @@
-const Status = require("../models/Status");
+/*const Status = require("../models/Status");
 
 exports.updateStatus = async (req, res) => {
     const { status } = req.body;
@@ -20,3 +20,24 @@ exports.getStatuses = async (req, res) => {
     const statuses = await Status.find().populate("teacherId", "name email");
     res.json(statuses);
 };
+*/
+const Status = require("../models/Status");
+
+exports.updateStatus = async (req, res) => {
+  const { availability } = req.body;
+  const teacherId = req.user.id;
+
+  const status = await Status.findOneAndUpdate(
+    { teacherId },
+    { availability, updatedAt: Date.now() },
+    { new: true, upsert: true }
+  );
+
+  res.json(status);
+};
+
+exports.getAllStatuses = async (req, res) => {
+  const statuses = await Status.find().populate("teacherId", "name email");
+  res.json(statuses);
+};
+
